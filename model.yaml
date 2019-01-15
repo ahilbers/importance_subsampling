@@ -1,0 +1,54 @@
+import:
+- techs.yaml
+- locations.yaml
+
+model:
+    name: Test model
+    timeseries_data_path: data
+    subset_time:  # Subset of timesteps
+        - '1980-01-01 00:00:00'
+        - '2015-12-31 23:00:00'
+    calliope_version: 0.6.2
+
+run:
+    mode: plan  # Choices: plan, operate
+    solver: gurobi 
+    ensure_feasibility: true
+
+tech_groups:
+    conversion:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+        interest_rate: 0
+    conversion_plus:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+                interest_rate: 0
+    storage:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+                interest_rate: 0
+    supply:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+                interest_rate: 0
+    supply_plus:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+                interest_rate: 0
+    transmission:
+        constraints:
+            lifetime: 1
+        costs:
+            monetary:
+                interest_rate: 0

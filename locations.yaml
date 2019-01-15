@@ -1,0 +1,10 @@
+locations:
+  region1:
+    techs:
+      demand_power:
+        constraints:
+          resource: file=demand.csv
+      baseload:
+      midmerit:
+      peaking:
+      wind:
