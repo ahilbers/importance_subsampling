@@ -10,7 +10,7 @@ Data and model files for preprint "Importance Subsampling: Improving Power Syste
 ## Contains:
 - data/demand_wind.csv: dataset with estimates of hourly UK-wide demand levels and wind capacity factors over the period 1980-2015. All leap days (29-Feb) are removed.
 - data/demand.csv: example of file format for the correct data/demand.csv file. The values from the 'demand' column in data/demand_wind.csv should be inserted here. All values should be negative.
-- data/wind.csv: example of file format for the correct data/wind.csv file. The values from the 'wind' column ind ata/demand_wind.csv should be inserted here.
+- data/wind.csv: example of file format for the correct data/wind.csv file. The values from the 'wind' column in data/demand_wind.csv should be inserted here.
 - model.yaml: main file used to Calliope model
 - locations.yaml: locations file used in creating Calliope model. 
 - techs.yaml: technology characteristics file used in creating Calliope model.  
