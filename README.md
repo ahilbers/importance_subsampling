@@ -5,8 +5,8 @@ Data and model files for preprint "Importance Subsampling: Improving Power Syste
 
 ## Notes 
 
-- Before running the model, the data/demand_wind.csv should be split into two different .csv files, called data/demand.csv and data/wind.csv, with the correct demand and wind capacity factors. All demand values should be multipled by -1. The files data/demand.csv and data/wind.csv are provided as an example of the correct format.
-- The version of Calliope used is 0.6.2.
+- Before running the model, the data/demand_wind.csv should be split into two different .csv files, called data/demand.csv and data/wind.csv, with the correct demand and wind capacity factors. All demand values should be multipled by -1. The files data/demand_ex.csv and data/wind_ex.csv are provided as an example of the correct format.
+- Model files are used in model generation Calliope (see acknowledgements). Model files are for Calliope version 0.6.2.
 
 
 
@@ -15,9 +15,9 @@ Data and model files for preprint "Importance Subsampling: Improving Power Syste
 - data/demand_wind.csv: dataset with estimates of hourly UK-wide demand levels and wind capacity factors over the period 1980-2015. All leap days (29-Feb) are removed.
 - data/demand.csv: example of file format for the correct data/demand.csv file. The values from the 'demand' column in data/demand_wind.csv should be inserted here. All values should be negative.
 - data/wind.csv: example of file format for the correct data/wind.csv file. The values from the 'wind' column in data/demand_wind.csv should be inserted here.
-- model.yaml: main file used to Calliope model
-- locations.yaml: locations file used in creating Calliope model. 
-- techs.yaml: technology characteristics file used in creating Calliope model.  
+- model/model.yaml: main file used to Calliope model
+- model/locations.yaml: locations file used in creating Calliope model. 
+- model/techs.yaml: technology characteristics file used in creating Calliope model.  
 
 
 ## Contact
