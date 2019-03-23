@@ -1,17 +1,18 @@
 # 2019_importance_subsampling
-Data and model files for preprint "Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)"
+Supplementary material, data and model files for "Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)"
 
 
 
 ## Notes 
 
 - Before running the model, the data/demand_wind.csv should be split into two different .csv files, called data/demand.csv and data/wind.csv, with the correct demand and wind capacity factors. All demand values should be multipled by -1. The files data/demand_ex.csv and data/wind_ex.csv are provided as an example of the correct format.
-- Model files are used in model generation Calliope (see acknowledgements). Model files are for Calliope version 0.6.2.
+- Model files are used in model generation _Calliope_ (see acknowledgements). Model files are for _Calliope_ version 0.6.2.
 
 
 
 ## Contains
 
+- supplementary_material.pdf: PDF file with results of applying _importance subsampling_ to demand dataset not based on regression as discussed at the end of the appendix of the original paper.
 - data/demand_wind.csv: dataset with estimates of hourly UK-wide demand levels and wind capacity factors over the period 1980-2015. All leap days (29-Feb) are removed.
 - data/demand.csv: example of file format for the correct data/demand.csv file. The values from the 'demand' column in data/demand_wind.csv should be inserted here. All values should be negative.
 - data/wind.csv: example of file format for the correct data/wind.csv file. The values from the 'wind' column in data/demand_wind.csv should be inserted here.
