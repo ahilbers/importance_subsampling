@@ -1,5 +1,17 @@
 # 2019_importance_subsampling
-Supplementary material, data and model files for "Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)"
+Data, model files, example code and supplementary material related to the paper "Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)".
+
+This repository contains:
+- All data & model files used in the power system model (PSM) used in the paper.
+- Sample code applying the _importance subsampling_ methodology to the test-case PSM, generating a full set of PSM outputs.
+- Supplementary material related to the paper.
+
+Some code:
+
+    print('hello, world!')
+
+
+
 
 
 
@@ -18,7 +30,7 @@ Supplementary material, data and model files for "Importance Subsampling: Improv
 - data/wind.csv: example of file format for the correct data/wind.csv file. The values from the 'wind' column in data/demand_wind.csv should be inserted here.
 - model_files/model.yaml: main file used to create Calliope model
 - model_files/locations.yaml: locations file used to create Calliope model. 
-- model_files/techs.yaml: technology characteristics file used to create Calliope model.  
+- model_files/techs.yaml: technology characteristics file used to create Calliope model.
 
 
 ## Contact
@@ -29,7 +41,7 @@ Adriaan Hilbers. Department of Mathematics, Imperial College London. aph416@ic.a
 
 ## Acknowledgements
 
-Models are constructed in the modelling framework Calliope, created by Stefan Pfenninger and Bryn Pickering. See callio.pe or the following paper for details:
+Models are constructed in the modelling framework _Calliope_, created by Stefan Pfenninger and Bryn Pickering. See callio.pe or the following paper for details:
 
 Pfenninger et al., (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:10.21105/joss.00825
 
