@@ -15,15 +15,15 @@ This repository contains:
 
 All files required to create the PSM. 
 
-- `model_files/`: repository containing all model files (in the correct format) for the employed PSM. It is created in the open source model generator _Calliope_ (see acknowledgements), version 0.6.2
+- `model_files/`: repository containing all model files for the employed PSM, in open source model generation _Calliope_ (see acknowledgements), version 0.6.2
 - 'data/': repository containing data files
-  - 'demand_wind.csv': demand and wind timeseries used in paper, across 36-year period 1980-2015
-  - 'demand_wind_national_grid.csv': demand and wind timeseries used in supplementary material
+  - `demand_wind.csv`: demand and wind timeseries used in paper, across 36-year period 1980-2015
+  - `demand_wind_national_grid.csv`: demand and wind timeseries used in supplementary material
 
 
 ### Sample code
 
-Sample code that builds the PSM and runs it using timeseries data subsampled using the _importance subsampling_ methodology. The code is designed to run with 'Python' 3.6 with 'numpy' and 'pandas' and _Calliope_ version 0.6.2.
+Sample code that builds the PSM and runs it using timeseries data subsampled using the _importance subsampling_ methodology. The code is designed to run with `Python` 3.6 with `numpy` and `pandas` and _Calliope_ version 0.6.2.
 
 The code can be run as follows from a unix command line:
 
@@ -32,13 +32,13 @@ The code can be run as follows from a unix command line:
 
 A directory outputs is created with all relevant PSM outputs.
 
-- 'main.py': main python script
-- 'scripts.py': relevant definitions and scripts.
+- `main.py`: main python script
+- `scripts.py`: relevant definitions and scripts.
 
 
 ### Supplementary material
 
-- 'supplementary_material.pdf': PDF file with results of applying _importance subsampling_ to the demand_wind_national_grid.csv timeseries data instead of demand_wind.csv as in the paper.
+- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the demand_wind_national_grid.csv timeseries data instead of demand_wind.csv as in the paper.
 
 
 
