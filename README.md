@@ -15,7 +15,7 @@ This repository contains:
 
 All files required to create the PSM. 
 
-- 'model_files/': repository containing all model files (in the correct format) for the employed PSM. It is created in the open source model generator _Calliope_ (see acknowledgements), version 0.6.2
+- `model_files/`: repository containing all model files (in the correct format) for the employed PSM. It is created in the open source model generator _Calliope_ (see acknowledgements), version 0.6.2
 - 'data/': repository containing data files
   - 'demand_wind.csv': demand and wind timeseries used in paper, across 36-year period 1980-2015
   - 'demand_wind_national_grid.csv': demand and wind timeseries used in supplementary material
