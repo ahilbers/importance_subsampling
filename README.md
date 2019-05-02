@@ -1,11 +1,6 @@
 # 2019_importance_subsampling
 Data, model files, example code and supplementary material related to the paper _Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)_.
 
-This repository contains:
-- All data & model files used in the power system model (PSM) used in the paper.
-- Sample code applying the _importance subsampling_ methodology to the test-case PSM, generating a full set of PSM outputs.
-- Supplementary material related to the paper.
-
 
 
 
