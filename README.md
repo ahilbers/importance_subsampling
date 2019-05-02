@@ -15,25 +15,25 @@ This repository contains:
 
 All files required to create the PSM. 
 
-- `model_files/`: repository containing all model files for the employed PSM, in open source model generation _Calliope_ (see acknowledgements), version 0.6.2
-- 'data/': repository containing data files
+- `model_files/`: repository containing all model files for the employed PSM, in open source model generator _Calliope_ (see acknowledgements), version 0.6.2
+- `data/`: repository containing data files. These can be substituted into the `model_files/demand.csv` and `model_files/wind_r.csv` (but be careful to respect the style in those files to ensure the PSM is built correctly, e.g. multiply demand by -1!)
   - `demand_wind.csv`: demand and wind timeseries used in paper, across 36-year period 1980-2015
-  - `demand_wind_national_grid.csv`: demand and wind timeseries used in supplementary material
+  - `demand_wind_national_grid.csv`: demand and wind timeseries used in supplementary material, across 8-year period 2008-2015
 
 
 ### Sample code
 
-Sample code that builds the PSM and runs it using timeseries data subsampled using the _importance subsampling_ methodology. The code is designed to run with `Python` 3.6 with `numpy` and `pandas` and _Calliope_ version 0.6.2.
-
-The code can be run as follows from a unix command line:
-
-    $ source activate calliope
-    (calliope) $ python3 main.py
-
-A directory outputs is created with all relevant PSM outputs.
+Sample code that builds the PSM and runs it using timeseries data subsampled using the _importance subsampling_ methodology. Relevant files:
 
 - `main.py`: main python script
-- `scripts.py`: relevant definitions and scripts.
+- `scripts.py`: relevant definitions and scripts
+
+Designed to run with `Python` 3.6 with `numpy` and `pandas` and _Calliope_ version 0.6.2. It is run as follows from a unix command line. Note that you need to install _Calliope_ first!
+
+    $ source activate calliope      # start Calliope environment
+    (calliope) $ python3 main.py    # run code
+
+A directory `outputs` is created with all relevant PSM outputs.
 
 
 ### Supplementary material
@@ -44,13 +44,9 @@ A directory outputs is created with all relevant PSM outputs.
 
 
 
-
-
 ## Contact
 
 Adriaan Hilbers. Department of Mathematics, Imperial College London. aph416@ic.ac.uk.
-
-
 
 
 
