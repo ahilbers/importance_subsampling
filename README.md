@@ -8,8 +8,6 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Modelling & data files
 
-All files required to create the PSM. 
-
 - `model_files/`: repository containing all model files for the employed PSM, in open source model generator _Calliope_ (see acknowledgements), version 0.6.2
 - `data/`: repository containing data files. These can be substituted into the `model_files/demand.csv` and `model_files/wind_r.csv` (but be careful to respect the style in those files to ensure the PSM is built correctly, e.g. multiply demand by -1!)
   - `demand_wind.csv`: demand and wind timeseries used in paper, across 36-year period 1980-2015
