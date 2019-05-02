@@ -1,5 +1,5 @@
 # 2019_importance_subsampling
-Data, model files, example code and supplementary material related to the paper _Importance Subsampling: Improving Power System Planning Under Climate-based Uncertainty (2019)_.
+Data, model files, example code and supplementary material related to the paper _Importance subsampling: improving power system planning under climate-based uncertainty (2019)_.
 
 
 
