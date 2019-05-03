@@ -16,7 +16,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Sample code
 
-Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and `Calliope` version `0.6.2`. Runs as follows from a unix command line. Note that you need to install `Calliope` (see acknowledgements) first!
+Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and `Calliope 0.6.2`. Runs as follows from a unix command line. Note that you need to install `Calliope` (see acknowledgements) first!
 
     $ source activate calliope      # start Calliope environment
     (calliope) $ python3 main.py    # run code
