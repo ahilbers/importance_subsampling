@@ -8,7 +8,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Modelling & data files
 
-- `model_files/`: repository containing all model files for the employed PSM, in open source model generator _Calliope_ (see acknowledgements), version 0.6.2
+- `model_files/`: contains all model files for employed PSM in open source model generator _Calliope_ (see acknowledgements), version 0.6.2
 - `data/`: repository containing data files. These can be substituted into the `model_files/data/demand.csv` and `model_files/data/wind_r.csv` (but be careful to respect the style in those files, e.g. multiply demand by -1)
   - `demand_wind.csv`: demand and wind timeseries used in paper
   - `demand_wind_national_grid.csv`: demand and wind timeseries used in supplementary material
@@ -16,7 +16,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Sample code
 
-Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python` 3.6 with `numpy` and `pandas` and _Calliope_ version 0.6.2. It is run as follows from a unix command line. Note that you need to install _Calliope_ (see acknowledgements) first!
+Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and _Calliope_ version `0.6.2`. Runs as follows from a unix command line. Note that you need to install _Calliope_ (see acknowledgements) first!
 
     $ source activate calliope      # start Calliope environment
     (calliope) $ python3 main.py    # run code
@@ -26,7 +26,7 @@ A directory `outputs` is created with all relevant PSM outputs.
 
 ### Supplementary material
 
-- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the demand_wind_national_grid.csv timeseries data instead of demand_wind.csv as in the paper.
+- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the `demand_wind_national_grid.csv` timeseries data instead of `demand_wind.csv` as in the original paper
 
 
 
@@ -41,7 +41,7 @@ Adriaan Hilbers. Department of Mathematics, Imperial College London. aph416@ic.a
 
 ## Acknowledgements
 
-Models are constructed in the modelling framework _Calliope_, created by Stefan Pfenninger and Bryn Pickering. See callio.pe or the following paper for details:
+Models are constructed in the modelling framework _Calliope_, created by Stefan Pfenninger and Bryn Pickering. See [callio.pe](callio.pe) or the following paper for details:
 
 - Pfenninger et al., (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:10.21105/joss.00825
 
