@@ -12,7 +12,7 @@ model:
 
 run:
     mode: plan  # Choices: plan, operate
-    solver: gurobi 
+    solver: glpk
     ensure_feasibility: true
 
 tech_groups:
