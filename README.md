@@ -16,7 +16,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Sample code
 
-Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and `Calliope 0.6.2`. Runs as follows from a unix command line. Note that you need have installed `Calliope` via Anaconda (see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for download instruction). The default solver is `GLPK' but this can be changed in `model_files/model.yaml'.
+Sample code executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and `Calliope 0.6.2`. Runs as follows from a unix command line. Note that you need have installed `Calliope` via Anaconda (see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for download instruction). The default solver is `GLPK` but this can be changed in `model_files/model.yaml`.
 
     $ conda activate calliope       # start Calliope environment
     (calliope) $ python3 main.py    # run code
