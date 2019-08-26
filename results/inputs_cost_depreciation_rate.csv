@@ -1,5 +1,0 @@
-costs,locs,techs,cost_depreciation_rate
-monetary,region1,baseload,1.0
-monetary,region1,midmerit,1.0
-monetary,region1,peaking,1.0
-monetary,region1,wind,1.0

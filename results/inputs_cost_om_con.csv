@@ -1,5 +1,0 @@
-costs,locs,techs,cost_om_con
-monetary,region1,baseload,0.005
-monetary,region1,midmerit,0.035
-monetary,region1,peaking,0.1
-monetary,region1,wind,0.0
