@@ -1,0 +1,2 @@
+carriers,locs,lookup_loc_carriers
+power,region1,"region1::wind::power,region1::midmerit::power,region1::peaking::power,region1::demand_power::power,region1::baseload::power"

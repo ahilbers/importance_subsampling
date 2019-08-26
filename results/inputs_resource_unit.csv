@@ -1,0 +1,3 @@
+locs,techs,resource_unit
+region1,demand_power,energy
+region1,wind,energy_per_area

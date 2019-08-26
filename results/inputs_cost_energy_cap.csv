@@ -1,0 +1,4 @@
+costs,locs,techs,cost_energy_cap
+monetary,region1,baseload,300.0
+monetary,region1,midmerit,100.0
+monetary,region1,peaking,50.0

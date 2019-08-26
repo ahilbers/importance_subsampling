@@ -1,0 +1,5 @@
+carriers,costs,techs,systemwide_levelised_cost
+power,monetary,peaking,0.44759093394803484
+power,monetary,baseload,0.04085235841127205
+power,monetary,wind,0.030368701225203593
+power,monetary,midmerit,0.061820957348266585
