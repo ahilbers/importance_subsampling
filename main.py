@@ -1,54 +1,43 @@
+import os
 import numpy as np
 import pandas as pd
-import os
 import calliope
-
-
-def imports():
-    demand_wind = pd.read_csv('data/demand_wind.csv', index_col=0)
-    demand_wind.index = pd.to_datetime(demand_wind.index)
-    series_index = ['baseload', 'midmerit', 'peaking', 'wind']
-    caps = pd.Series([10, 10, 10, 30], index=series_index)
-    tech_varcosts = pd.Series([0.005, 0.035, 0.100, 0.000],
-                              index=series_index)
-
-    return demand_wind, caps, tech_varcosts
 
 
 def convert_numpy_to_pandas(data, columns=['demand', 'wind'],
                             index_start='2015-01-01 00:00:00'):
     """Convert numpy array to pandas DataFrame time series for Calliope.
 
-    Parameters:
-    -----------
-    data: data to be converted, as numpy array.
-    columns: columns for export pandas DataFrame
-    index: pandas DataFrame index start.
+    Parameters
+    ----------
+    data (NDArray): data to be converted
+    columns (list of str): columns for export
+    index (str): start of pandas datetime index
 
-    Returns:
-    --------
-    data_pd: pandas DataFrame of data input
+    Returns
+    -------
+    data_pd (pandas DataFrame): data, as pandas DataFrame
     """
 
-    index = pd.date_range(start=index_start, periods=data.shape[0],
-                          freq='h')
+    index = pd.date_range(start=index_start, periods=data.shape[0], freq='h')
     data_pd = pd.DataFrame(data, index=index, columns=columns)
     return data_pd
 
 
 def calculate_varcosts(dem_wind, caps, tech_varcosts):
-    """Calculate each timestep's variable cost.
+    """Calculate each time step's variable cost.
 
-    Parameters:
-    -----------
-    dem_wind: pandas DataFrame of demand and wind time series data
-    caps: pandas Series with installed capacities of each generation
+    Parameters
+    ----------
+    dem_wind (pandas DataFrame): demand and wind time series data. Should
+        have 2 columns: 'demand' and 'wind'
+    caps (pandas Series): installed capacities of each generation
         technology (baseload, midmerit, peaking and wind).
-    tech_varcosts: pandas Series with generation costs of each technology
+    tech_varcosts (pandas Series): generation costs of each technology
 
-    Returns:
-    --------
-    time_step_varcosts: pandas DataFrame with variable cost time series
+    Returns
+    -------
+    time_step_varcosts (pandas DataFrame): variable cost time series
     """
 
     demand = dem_wind.loc[:, 'demand']
@@ -69,24 +58,23 @@ def calculate_varcosts(dem_wind, caps, tech_varcosts):
     return time_step_varcosts
 
 
-def importance_subsampling(dem_wind, caps, tech_varcosts,
-                           num_ts_total, num_ts_highbin):
+def create_importance_subsample(dem_wind, caps, tech_varcosts,
+                                num_ts_total, num_ts_highbin):
     """Create demand and wind timeseries via importance subsampling
     using a timestep's variable cost as the importance function.
 
-    Parameters:
-    -----------
-    dem_wind: pandas DataFrame of demand and wind time series data to
-        sample from
-    caps: list with capacities used to calculate variable cost
-    num_ts_total: total number of sampled timesteps
-    num_ts_highbin: number of timesteps in bin with high variable cost
+    Parameters
+    ----------
+    dem_wind (pandas DataFrame): demand/wind time series data to sample from
+    caps (pandas Series): capacities used to calculate variable cost
+    num_ts_total (int): total number of sampled timesteps
+    num_ts_highbin (int): number of timesteps in bin with high variable cost
 
     Returns:
     --------
-    sampled_demand: numpy array of sampled demand values
-    sampled_wind: numpy array of sampled wind values
-    weights: numpy array of timestep weights
+    sampled_demand (NDArray): sampled demand values
+    sampled_wind (NDArray): sampled wind values
+    weights (NDArray): timestep weights
     """
 
     if num_ts_total < num_ts_highbin:
@@ -96,8 +84,8 @@ def importance_subsampling(dem_wind, caps, tech_varcosts,
     # Create importance subsample
     num_ts_input = dem_wind.shape[0]
     num_ts_lowbin = num_ts_total - num_ts_highbin
-    time_step_varcosts = \
-        np.array(calculate_varcosts(dem_wind, caps, tech_varcosts))
+    time_step_varcosts = np.array(calculate_varcosts(
+        dem_wind=dem_wind, caps=caps, tech_varcosts=tech_varcosts))
     dem_wind_sorted = \
         np.array(dem_wind.iloc[np.argsort(-time_step_varcosts)])
     sampled_highbin = dem_wind_sorted[:num_ts_highbin]
@@ -105,8 +93,7 @@ def importance_subsampling(dem_wind, caps, tech_varcosts,
         num_ts_highbin + np.random.choice(num_ts_input - num_ts_highbin,
                                           num_ts_lowbin, replace=False)
     sampled_lowbin = dem_wind_sorted[sampled_lowbin_index]
-    sampled_data = np.concatenate((sampled_highbin, sampled_lowbin),
-                                  axis=0)
+    sampled_data = np.concatenate((sampled_highbin, sampled_lowbin), axis=0)
     sampled_demand, sampled_wind = sampled_data[:, 0], sampled_data[:, 1]
 
     # Calculate weights (summing to 8760)
@@ -126,14 +113,15 @@ def run_calliope_model(dem_wind, weights=None, save_csv=True,
 
     Parameters:
     -----------
-    dem_wind: pandas DataFrame of demand and wind time series data
-    weights: numpy array or pandas DataFrame with time step weights
-    save_csv: save model outputs as CSV (True or False)
-    return_model: return the solved Calliope model (True or False)
+    dem_wind (pandas DataFrame): demand and wind time series data
+    weights (NDArray or pandas DataFrame): time step weights
+    save_csv (Boolean) save model outputs as CSV
+    return_model (Boolean) return the solved Calliope model
 
     Returns:
     --------
-    model: solved Calliope model (if return_model is True)
+    model (instance of calliope.Model): solved Calliope model (if 
+        return_model is True)
     """
 
     if weights is not None:
@@ -141,10 +129,8 @@ def run_calliope_model(dem_wind, weights=None, save_csv=True,
             raise ValueError('demand/wind data and weights must have same '
                              'number of time steps.')
 
-    num_ts = dem_wind.shape[0]
-
     # Calliope requires a CSV file for time series data. We create a blank
-    # one to initialize the model, then add in the correct data manually.
+    # one to initialize the model, then delete it.
     dem_wind_placeholder = pd.DataFrame(data=np.zeros(dem_wind.shape),
                                         index=dem_wind.index,
                                         columns=dem_wind.columns)
@@ -153,7 +139,7 @@ def run_calliope_model(dem_wind, weights=None, save_csv=True,
     model = calliope.Model('model_files/model.yaml')
     os.remove('model_files/demand_wind_placeholder.csv')
 
-    # Input demand, wind and weights
+    # Input correct demand, wind and weights
     model.inputs.resource.loc['region1::demand_power'].values[:] = \
         -np.array(dem_wind.loc[:, 'demand'])
     model.inputs.resource.loc['region1::wind'].values[:] = \
@@ -178,15 +164,17 @@ def run_calliope_model_importance_subsampling(dem_wind_full,
 
     Parameters:
     -----------
-    dem_wind_full: pandas DataFrame of full demand and wind time series
+    dem_wind_full (pandas DataFrame): full demand and wind time series
         to be sampled from.
-    num_ts_total: total number of sampled timesteps
-    num_ts_highbin: number of timesteps in bin with high variable cost
-    save_csv: save model outputs as CSV (True or False)
+    num_ts_total (int): total number of sampled timesteps
+    num_ts_highbin (int): number of timesteps in bin with high variable cost
+    save_csv (Boolean): save model outputs as CSV
+    return_model (Boolean): return the solved Calliope model
 
     Returns:
     --------
-    model: solved Calliope model (if return_model is True)
+    model (instance of calliope.Model): solved Calliope model (if 
+        return_model is True)
     """
 
     # Stage 1: run model with random subsample of time steps
@@ -195,17 +183,19 @@ def run_calliope_model_importance_subsampling(dem_wind_full,
                                                  size=num_ts_total,
                                                  replace=False)]
     dem_wind_s1 = convert_numpy_to_pandas(dem_wind_s1)
+    print('Solving stage 1 model with random subample of time steps...')
     model = run_calliope_model(dem_wind_s1, weights=None,
                                save_csv=False, return_model=True)
+    print('Stage 1 model run completed.')
 
     # Variable costs of the technologies
     vc_bl = float(model.inputs.cost_om_con.loc[:, 'region1::baseload'])
     vc_mm = float(model.inputs.cost_om_con.loc[:, 'region1::midmerit'])
     vc_pk = float(model.inputs.cost_om_con.loc[:, 'region1::peaking'])
     vc_wd = float(model.inputs.cost_om_con.loc[:, 'region1::wind'])
-    tech_varcosts = \
-        pd.Series([vc_bl, vc_mm, vc_pk, vc_wd],
-                  index=['baseload', 'midmerit', 'peaking', 'wind'])
+    tech_varcosts = pd.Series([vc_bl, vc_mm, vc_pk, vc_wd],
+                              index=['baseload', 'midmerit',
+                                     'peaking', 'wind'])
 
     # Stage 1 capacities used to calculate variable cost
     res = model.results
@@ -217,13 +207,16 @@ def run_calliope_model_importance_subsampling(dem_wind_full,
                         index=['baseload', 'midmerit', 'peaking', 'wind'])
 
     # Stage 2: run model with importance subsample of time steps
-    dem_s2, wind_s2, weights_s2 = \
-        importance_subsampling(dem_wind_full, caps_s1, tech_varcosts,
-                               num_ts_total, num_ts_highbin)
+    dem_s2, wind_s2, weights_s2 = create_importance_subsample(
+        dem_wind_full, caps_s1, tech_varcosts, num_ts_total, num_ts_highbin)
     dem_wind_s2 = np.vstack((dem_s2, wind_s2)).T
     dem_wind_s2 = convert_numpy_to_pandas(dem_wind_s2)
-    run_calliope_model(dem_wind_s2, weights=weights_s2,
-                       save_csv=save_csv, return_model=return_model)
+    print('Solving stage 2 model with importance subsample of time steps...')
+    model = run_calliope_model(dem_wind=dem_wind_s2, weights=weights_s2,
+                               save_csv=save_csv, return_model=return_model)
+    print('Stage 2 model run completed. Saving results if applicable.')
+    if return_model:
+        return model
 
 
 def run_importance_subsampling_example():
