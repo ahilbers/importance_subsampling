@@ -8,7 +8,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Modelling & data files
 
-- `model_files/`: model files for employed PSM in open source model generator `Calliope` (see acknowledgements), version 0.6.4
+- `model_files/`: power system model generating files, for `Calliope` (see acknowledgements)
 - `data/`: demand and weather time series data
   - `demand_wind.csv`: demand and wind time series used in paper
   - `demand_wind_national_grid.csv`: demand and wind time series used in supplementary material
@@ -16,7 +16,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Code
 
-`main.py` contains a simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See [requirements & installation](##Requirements & Installation) for setup details. The following assumes that `Calliope` is installed in a virtual environment called `calliope`. 
+`main.py` contains a simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See [requirements & installation](Requirements & Installation) for setup details. The following assumes that `Calliope` is installed in a virtual environment called `calliope`. 
 
 It can be run from a unix command line as follows: 
 
