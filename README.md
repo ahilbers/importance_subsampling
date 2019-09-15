@@ -16,9 +16,7 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Code
 
-`main.py` contains a simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See [requirements & installation](Requirements & Installation) for setup details. The following assumes that `Calliope` is installed in a virtual environment called `calliope`. 
-
-It can be run from a unix command line as follows: 
+`main.py` contains a simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See _requirements & installation_ for setup details. Assuming `Calliope` is installed in an anaconda virtual environment called `calliope`, an example simulation can be run from a unix command line as follows:
 
     $ conda activate calliope       # activate virtual environment
     (calliope) $ python3 main.py    # run code
