@@ -1,5 +1,5 @@
 # 2019_importance_subsampling
-Data, model files, example code and supplementary material related to the paper _Importance subsampling: improving power system planning under climate-based uncertainty (2019)_.
+Data, model files, example code and supplementary material related to the paper [_Importance subsampling: improving power system planning under climate-based uncertainty](https://www.sciencedirect.com/science/article/pii/S0306261919307639) (2019)_. A publicly available preprint can be found [here](https://arxiv.org/pdf/1903.10916.pdf). 
 
 
 
@@ -8,17 +8,19 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Modelling & data files
 
-- `model_files/`: contains all model files for employed PSM in open source model generator `Calliope` (see acknowledgements), version 0.6.4
-- `data/`: contains data (demand and weather time series) files
-  - `demand_wind.csv`: demand and wind timeseries used in paper
-  - `demand_wind_national_grid.csv`: demand and wind timeseries used in supplementary material
+- `model_files/`: model files for employed PSM in open source model generator `Calliope` (see acknowledgements), version 0.6.4
+- `data/`: demand and weather time series data
+  - `demand_wind.csv`: demand and wind time series used in paper
+  - `demand_wind_national_grid.csv`: demand and wind time series used in supplementary material
 
 
 ### Code
 
-Code for executing the _importance subsampling_ methodology on the PSM used in the paper. Designed to run with `Python 3.6` with `numpy` and `pandas` and `Calliope 0.6.4`. Runs as follows from a unix command line. Note that you need have installed `Calliope` via Anaconda (see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for download instruction). The default solver is `cbc` but this can be changed in `model_files/model.yaml`.
+`main.py` contains a simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See [requirements & installation](##Requirements & Installation) for setup details. The following assumes that `Calliope` is installed in a virtual environment called `calliope`. 
 
-    $ conda activate calliope       # start Calliope environment
+It can be run from a unix command line as follows: 
+
+    $ conda activate calliope       # activate virtual environment
     (calliope) $ python3 main.py    # run code
 
 A directory `results` is created with all relevant PSM outputs.
@@ -26,7 +28,22 @@ A directory `results` is created with all relevant PSM outputs.
 
 ### Supplementary material
 
-- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the `demand_wind_national_grid.csv` timeseries data instead of `demand_wind.csv` as in the original paper
+- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the `demand_wind_national_grid.csv` time series data instead of `demand_wind.csv` as in the original paper
+
+
+
+
+## Requirements & Installation
+
+Since `main.py`, containing all code, is a short file with only a few functions, it's probably easier to directly copy-paste any relevant code into a personal project as opposed to installing a new module. For this reason, this repository does not contain a `setup.py` file.
+
+Running `main.py` requires:
+- Python modules:
+  - `Calliope 0.64`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation. By default, `Calliope` is installed in a virtual environment, which we assume is called `calliope`.
+  - `numpy 1.62.2`
+  - `pandas 0.24.2`
+- Other:
+  - `cbc`: open-source optimiser: see [this link](https://projects.coin-or.org/Cbc) for installation. Other solvers (e.g. `gurobi`) are also possible -- the solver can be specified in `model_files/model.yaml`.
 
 
 
@@ -34,7 +51,7 @@ A directory `results` is created with all relevant PSM outputs.
 
 ## Contact
 
-Adriaan Hilbers. Department of Mathematics, Imperial College London. aph416@ic.ac.uk.
+Adriaan Hilbers. Department of Mathematics, Imperial College London. [aph416@ic.ac.uk](mailto:aph416@ic.ac.uk).
 
 
 
