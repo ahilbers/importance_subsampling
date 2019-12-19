@@ -12,7 +12,7 @@ def convert_numpy_to_pandas(data, columns=['demand', 'wind'],
     ----------
     data (NDArray): data to be converted
     columns (list of str): columns for export
-    index (str): start of pandas datetime index
+    index_start (str): start of pandas datetime index
 
     Returns
     -------
@@ -173,7 +173,7 @@ def run_calliope_model_importance_subsampling(dem_wind_full,
 
     Returns:
     --------
-    model (instance of calliope.Model): solved Calliope model (if 
+    model (instance of calliope.Model): solved Calliope model (if
         return_model is True)
     """
 
@@ -217,6 +217,7 @@ def run_calliope_model_importance_subsampling(dem_wind_full,
     print('Stage 2 model run completed. Saving results if applicable.')
     if return_model:
         return model
+    return None
 
 
 def run_importance_subsampling_example():
