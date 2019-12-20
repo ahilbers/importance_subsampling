@@ -11,7 +11,6 @@ Data, model files, example code and supplementary material related to the paper 
 - `model_files/`: power system model generating files, for `Calliope` (see acknowledgements)
 - `data/`: demand and weather time series data
   - `demand_wind.csv`: demand and wind time series used in paper
-  - `demand_wind_national_grid.csv`: demand and wind time series used in supplementary material
 
 
 ### Code
@@ -53,7 +52,7 @@ Adriaan Hilbers. Department of Mathematics, Imperial College London. [aph416@ic.
 
 Models are constructed in the modelling framework `Calliope`, created by Stefan Pfenninger and Bryn Pickering. See [callio.pe](callio.pe) or the following paper for details:
 
-- Pfenninger et al., (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:10.21105/joss.00825.
+- Pfenninger, S. and Pickering, B. (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:10.21105/joss.00825.
 
 The demand and wind dataset is based on work by Hannah Bloomfield et al. Details can be found in the following papers:
 
