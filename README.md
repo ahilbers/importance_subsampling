@@ -31,7 +31,7 @@ Since `main.py`, containing all code, is a short file with only a few functions,
 
 Running `main.py` requires:
 - Python modules:
-  - `Calliope 0.6.4`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation. By default, `Calliope` is installed in a virtual environment, which we assume is called `calliope`.
+  - `Calliope 0.6.4`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation.
   - `numpy 1.62.2`
   - `pandas 0.24.2`
 - Other:
