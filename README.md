@@ -65,6 +65,6 @@ The demand and wind dataset is based on work by Hannah Bloomfield et al. Details
 
 - HC Bloomfield, DJ Brayshaw, LC Shaffrey, PJ Coker and HE Thornton (2016). Quantifying the increasing sensitivity of power systems to climate variability. Environmental Research Letters, 11 (12). 124025. ISSN 1748­ 9326 doi:[10.1088/1748­9326/11/12/124025](https://doi.org/10.1088/1748­9326/11/12/124025)
 
-- Cannon, D. J., Brayshaw, D. J., Methven, J., Coker, P. J., & Lenaghan, D. (2015). Using reanalysis data to quantify extreme wind power generation statistics: A 33 year case study in Great Britain. Renewable Energy, 75 , 767 – 778. doi:[10.1016/j.renene.2014.10.024](https://doi.org/10.1016/j.renene.2014.10.024)
+- DJ Cannon, DJ Brayshaw, J Methven, PJ Coker, D Lenaghan (2015). Using reanalysis data to quantify extreme wind power generation statistics: A 33 year case study in Great Britain. Renewable Energy, 75 , 767 – 778. doi:[10.1016/j.renene.2014.10.024](https://doi.org/10.1016/j.renene.2014.10.024)
 
 - DR Drew, DJ Cannon, DJ Brayshaw, JF Barlow, PJ Coker (2015). The impact of future offshore wind farms on wind power generation in Great Britain. Resources, 4 , 155–171. doi:[10.3390/resources4010155](https://doi.org/10.3390/resources4010155).
