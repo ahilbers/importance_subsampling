@@ -1,3 +1,5 @@
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+
 # importance_subsampling
 Data, model files, example code and supplementary material related to the paper [Importance subsampling: improving power system planning under climate-based uncertainty](https://www.sciencedirect.com/science/article/pii/S0306261919307639) (2019). A publicly available preprint can be found [here](https://arxiv.org/pdf/1903.10916.pdf). 
 
