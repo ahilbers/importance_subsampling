@@ -1,4 +1,4 @@
-# 2019_importance_subsampling
+# importance_subsampling
 Data, model files, example code and supplementary material related to the paper [Importance subsampling: improving power system planning under climate-based uncertainty](https://www.sciencedirect.com/science/article/pii/S0306261919307639) (2019). A publicly available preprint can be found [here](https://arxiv.org/pdf/1903.10916.pdf). 
 
 
