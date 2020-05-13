@@ -1,238 +1,390 @@
+"""Example model runs."""
+
+
 import os
 import numpy as np
 import pandas as pd
-import calliope
+import time
+import logging
+import models
+import tests
+import pdb
 
 
-def convert_numpy_to_pandas(data, columns=['demand', 'wind'],
-                            index_start='2015-01-01 00:00:00'):
-    """Convert numpy array to pandas DataFrame time series for Calliope.
+def calculate_generation_costs(model_name, ts_data, fixed_caps,
+                               baseload_ramping=False, test_mode=False,
+                               run_id=0):
+    """Calculate each time step's generation cost in some demand & weather
+    time series data."""
 
-    Parameters
-    ----------
-    data (NDArray): data to be converted
-    columns (list of str): columns for export
-    index_start (str): start of pandas datetime index
+    if model_name == '1_region':
+        Model = models.OneRegionModel
+    elif model_name == '6_region':
+        Model = models.SixRegionModel
+    else:
+        raise ValueError('Invalid model name.')
 
-    Returns
-    -------
-    data_pd (pandas DataFrame): data, as pandas DataFrame
-    """
-
-    index = pd.date_range(start=index_start, periods=data.shape[0], freq='h')
-    data_pd = pd.DataFrame(data, index=index, columns=columns)
-    return data_pd
-
-
-def calculate_varcosts(dem_wind, caps, tech_varcosts):
-    """Calculate each time step's variable cost.
-
-    Parameters
-    ----------
-    dem_wind (pandas DataFrame): demand and wind time series data. Should
-        have 2 columns: 'demand' and 'wind'
-    caps (pandas Series): installed capacities of each generation
-        technology (baseload, midmerit, peaking and wind).
-    tech_varcosts (pandas Series): generation costs of each technology
-
-    Returns
-    -------
-    time_step_varcosts (pandas DataFrame): variable cost time series
-    """
-
-    demand = dem_wind.loc[:, 'demand']
-    wind_cf = dem_wind.loc[:, 'wind']
-
-    # Calculate merit-order stacking generation levels of each technology
-    gens_wd = np.minimum(caps['wind'] * wind_cf, demand)
-    gens_bl = np.minimum(caps['baseload'], demand - gens_wd)
-    gens_mm = np.minimum(caps['midmerit'], demand - gens_wd - gens_bl)
-    gens_pk = demand - gens_wd - gens_bl - gens_mm    # No unmet demand
-
-    # Calculate variable (generation) cost at each time step
-    time_step_varcosts = tech_varcosts['baseload'] * gens_bl + \
-        tech_varcosts['midmerit'] * gens_mm + \
-        tech_varcosts['peaking'] * gens_pk + \
-        tech_varcosts['wind'] * gens_wd
-
-    return time_step_varcosts
-
-
-def create_importance_subsample(dem_wind, caps, tech_varcosts,
-                                num_ts_total, num_ts_highbin):
-    """Create demand and wind timeseries via importance subsampling
-    using a timestep's variable cost as the importance function.
-
-    Parameters
-    ----------
-    dem_wind (pandas DataFrame): demand/wind time series data to sample from
-    caps (pandas Series): capacities used to calculate variable cost
-    num_ts_total (int): total number of sampled timesteps
-    num_ts_highbin (int): number of timesteps in bin with high variable cost
-
-    Returns:
-    --------
-    sampled_demand (NDArray): sampled demand values
-    sampled_wind (NDArray): sampled wind values
-    weights (NDArray): timestep weights
-    """
-
-    if num_ts_total < num_ts_highbin:
-        raise ValueError('Number of time steps in high bin cannot exceed '
-                         'total desired sample size.')
-
-    # Create importance subsample
-    num_ts_input = dem_wind.shape[0]
-    num_ts_lowbin = num_ts_total - num_ts_highbin
-    time_step_varcosts = np.array(calculate_varcosts(
-        dem_wind=dem_wind, caps=caps, tech_varcosts=tech_varcosts))
-    dem_wind_sorted = \
-        np.array(dem_wind.iloc[np.argsort(-time_step_varcosts)])
-    sampled_highbin = dem_wind_sorted[:num_ts_highbin]
-    sampled_lowbin_index = \
-        num_ts_highbin + np.random.choice(num_ts_input - num_ts_highbin,
-                                          num_ts_lowbin, replace=False)
-    sampled_lowbin = dem_wind_sorted[sampled_lowbin_index]
-    sampled_data = np.concatenate((sampled_highbin, sampled_lowbin), axis=0)
-    sampled_demand, sampled_wind = sampled_data[:, 0], sampled_data[:, 1]
-
-    # Calculate weights (summing to 8760)
-    weight_highbin = 1 / num_ts_input
-    weight_lowbin = \
-        (num_ts_input - num_ts_highbin) / (num_ts_lowbin * num_ts_input)
-    weights_highbin = weight_highbin * 8760 * np.ones(shape=(num_ts_highbin))
-    weights_lowbin = weight_lowbin * 8760 * np.ones(shape=(num_ts_lowbin))
-    weights = np.concatenate((weights_highbin, weights_lowbin), axis=0)
-
-    return sampled_demand, sampled_wind, weights
-
-
-def run_calliope_model(dem_wind, weights=None, save_csv=True,
-                       return_model=False):
-    """Run Calliope model with some demand & wind data.
-
-    Parameters:
-    -----------
-    dem_wind (pandas DataFrame): demand and wind time series data
-    weights (NDArray or pandas DataFrame): time step weights
-    save_csv (Boolean) save model outputs as CSV
-    return_model (Boolean) return the solved Calliope model
-
-    Returns:
-    --------
-    model (instance of calliope.Model): solved Calliope model (if 
-        return_model is True)
-    """
-
-    if weights is not None:
-        if dem_wind.shape[0] != weights.shape[0]:
-            raise ValueError('demand/wind data and weights must have same '
-                             'number of time steps.')
-
-    # Calliope requires a CSV file for time series data. We create a blank
-    # one to initialize the model, then delete it.
-    dem_wind_placeholder = pd.DataFrame(data=np.zeros(dem_wind.shape),
-                                        index=dem_wind.index,
-                                        columns=dem_wind.columns)
-    dem_wind_placeholder.to_csv('model_files/demand_wind_placeholder.csv',
-                                float_format='%.4f')
-    model = calliope.Model('model_files/model.yaml')
-    os.remove('model_files/demand_wind_placeholder.csv')
-
-    # Input correct demand, wind and weights
-    model.inputs.resource.loc['region1::demand_power'].values[:] = \
-        -np.array(dem_wind.loc[:, 'demand'])
-    model.inputs.resource.loc['region1::wind'].values[:] = \
-        np.array(dem_wind.loc[:, 'wind'])
-    if weights is not None:
-        model.inputs.timestep_weights.values = np.array(weights)
-
+    logging.info('Calculating generation costs. '
+                 'Handing over to Calliope now.')
+    model = Model(ts_data=ts_data, run_mode='operate',
+                  baseload_integer=False, baseload_ramping=baseload_ramping,
+                  fixed_caps=fixed_caps, run_id=run_id)
     model.run()
-    if save_csv:
-        model.to_csv('results')    # Output directory
-    if return_model:
-        return model
+    logging.info('Summary outputs from operational run:%s',
+                 model.get_summary_outputs())
+    logging.info('Model run complete.\n\n')
+    generation_costs = model.results.cost_var.values.sum(axis=(0, 1))
+    generation_costs = pd.DataFrame(generation_costs, index=ts_data.index,
+                                    columns=['generation_cost'])
+
+    if test_mode:
+        return generation_costs, model
+
+    return generation_costs
 
 
-def run_calliope_model_importance_subsampling(dem_wind_full,
-                                              num_ts_total,
-                                              num_ts_highbin,
-                                              save_csv=True,
-                                              return_model=False):
-    """Run Calliope with demand and wind subsample generated using
-    importance subsampling method.
+def get_day_sample(ts_data, sample_days):
+    """Get a sample from a DataFrame of days.
 
     Parameters:
     -----------
-    dem_wind_full (pandas DataFrame): full demand and wind time series
-        to be sampled from.
-    num_ts_total (int): total number of sampled timesteps
-    num_ts_highbin (int): number of timesteps in bin with high variable cost
-    save_csv (Boolean): save model outputs as CSV
-    return_model (Boolean): return the solved Calliope model
+    ts_data (pandas DataFrame) : demand and wind data to sample from.
+    sample_days (pandas DataFrame) : the sample days: dataFrame with 3
+        columns: 'year', 'month' and 'day'
 
     Returns:
     --------
-    model (instance of calliope.Model): solved Calliope model (if
-        return_model is True)
+    sample: the demand and wind time series on the sampled days.
     """
 
-    # Stage 1: run model with random subsample of time steps
-    dem_wind_s1 = \
-        np.array(dem_wind_full)[np.random.choice(dem_wind_full.shape[0],
-                                                 size=num_ts_total,
-                                                 replace=False)]
-    dem_wind_s1 = convert_numpy_to_pandas(dem_wind_s1)
-    print('Solving stage 1 model with random subample of time steps...')
-    model = run_calliope_model(dem_wind_s1, weights=None,
-                               save_csv=False, return_model=True)
-    print('Stage 1 model run completed.')
+    # Construct the sample by concatenating the sampled days
+    sample = pd.concat([ts_data.loc[
+        ts_data.index.year.isin([sample_day.year]) &
+        ts_data.index.month.isin([sample_day.month]) &
+        ts_data.index.day.isin([sample_day.day])
+    ] for sample_day in sample_days.itertuples()])
 
-    # Variable costs of the technologies
-    vc_bl = float(model.inputs.cost_om_con.loc[:, 'region1::baseload'])
-    vc_mm = float(model.inputs.cost_om_con.loc[:, 'region1::midmerit'])
-    vc_pk = float(model.inputs.cost_om_con.loc[:, 'region1::peaking'])
-    vc_wd = float(model.inputs.cost_om_con.loc[:, 'region1::wind'])
-    tech_varcosts = pd.Series([vc_bl, vc_mm, vc_pk, vc_wd],
-                              index=['baseload', 'midmerit',
-                                     'peaking', 'wind'])
-
-    # Stage 1 capacities used to calculate variable cost
-    res = model.results
-    cap_bl = float(res.energy_cap.loc['region1::baseload'].values)
-    cap_mm = float(res.energy_cap.loc['region1::midmerit'].values)
-    cap_pk = float(res.energy_cap.loc['region1::peaking'].values)
-    cap_wd = float(res.resource_area.loc['region1::wind'].values)
-    caps_s1 = pd.Series([cap_bl, cap_mm, cap_pk, cap_wd],
-                        index=['baseload', 'midmerit', 'peaking', 'wind'])
-
-    # Stage 2: run model with importance subsample of time steps
-    dem_s2, wind_s2, weights_s2 = create_importance_subsample(
-        dem_wind_full, caps_s1, tech_varcosts, num_ts_total, num_ts_highbin)
-    dem_wind_s2 = np.vstack((dem_s2, wind_s2)).T
-    dem_wind_s2 = convert_numpy_to_pandas(dem_wind_s2)
-    print('Solving stage 2 model with importance subsample of time steps...')
-    model = run_calliope_model(dem_wind=dem_wind_s2, weights=weights_s2,
-                               save_csv=save_csv, return_model=return_model)
-    print('Stage 2 model run completed. Saving results if applicable.')
-    if return_model:
-        return model
-    return None
+    return sample
 
 
-def run_importance_subsampling_example():
-    """Run Calliope model with time series created using importance
-    subsampling methodology, as an example."""
+def create_random_subsample(ts_data, num_days_sample, blocks):
+    """Sample days randomly from some time series."""
 
-    dem_wind_full = pd.read_csv('data/demand_wind.csv', index_col=0)
-    dem_wind_full.index = pd.to_datetime(dem_wind_full.index)
+    if blocks == 'hours':
+        sample = ts_data.iloc[np.sort(np.random.choice(
+            ts_data.shape[0], size=24*num_days_sample, replace=False
+        ))]
+    elif blocks == 'days':
+        unique_days = pd.DataFrame(
+            list(dict.fromkeys(zip(ts_data.index.year,
+                                   ts_data.index.month,
+                                   ts_data.index.day))),
+            columns=['year', 'month', 'day']
+        )
+        sample_days = unique_days.iloc[np.sort(np.random.choice(
+            len(unique_days), size=num_days_sample, replace=False
+        ))]
+        sample = get_day_sample(ts_data, sample_days)
+    else:
+        raise ValueError('Valid subsample blocks: hours or days.')
 
-    run_calliope_model_importance_subsampling(dem_wind_full,
-                                              num_ts_total=8760,
-                                              num_ts_highbin=60,
-                                              save_csv=True,
-                                              return_model=False)
+    return sample
 
 
-if __name__ == '__main__':
-    run_importance_subsampling_example()
+def create_daily_vectors(ts_data):
+    """Create day vectors of time series data."""
+
+    # Reshape data into daily vectors
+    sample_index = ts_data.resample('24h').mean().dropna().index
+    sample_columns = sum([
+        ['{}_{}'.format(input_column, hour) for hour in range(24)]
+        for input_column in ts_data.columns
+    ], [])
+    daily_vecs = pd.DataFrame(index=sample_index, columns=sample_columns)
+    for i, input_column in enumerate(ts_data.columns):
+        column_data = ts_data.loc[:, input_column].values
+        daily_vecs.iloc[:, 24*i:24*(i+1)] = np.reshape(
+            column_data, newshape=(round(ts_data.shape[0]/24), -1)
+        )
+
+    return daily_vecs
+
+
+def create_clustered_sample(ts_data, num_clusters):
+    """Create weighted subsample by k-medoid clustering daily ts data."""
+
+    # Obtain daily vectors and rescale them to lie between 0 and 1
+    daily_vecs = create_daily_vectors(ts_data)
+    daily_vecs_rescaled = daily_vecs.copy()
+    for i, input_column in enumerate(ts_data.columns):
+        min_val = ts_data.loc[:, input_column].min()
+        max_val = ts_data.loc[:, input_column].max()
+        daily_vecs_rescaled.iloc[:, 24*i:24*(i+1)] = (
+            (daily_vecs.iloc[:, 24*i:24*(i+1)] - min_val)
+            / (max_val - min_val)
+        )
+
+    # Cluster the days and create a sample of them
+    from sklearn.cluster import k_means
+    means, labels, _ = k_means(daily_vecs_rescaled.values,
+                               n_clusters=num_clusters)
+    medoids = pd.DataFrame(index=np.arange(num_clusters),
+                           columns=['year', 'month', 'day'])
+    for cluster_num in range(num_clusters):
+        closest_day = (daily_vecs_rescaled.iloc[labels == cluster_num]
+                       - means[cluster_num]).pow(2).sum(axis=1).idxmin()
+        medoids.loc[cluster_num, :] = [closest_day.year,
+                                       closest_day.month,
+                                       closest_day.day]
+    sample = get_day_sample(ts_data, medoids)
+
+    # Adjust the weights to account for cluster sizes
+    weights = pd.DataFrame(index=sample.index, columns=['weight'],
+                           dtype=float)
+    for cluster_num in range(num_clusters):
+        weights.iloc[24*cluster_num:24*(cluster_num+1), 0] = float(
+            num_clusters * len(labels[labels == cluster_num])
+            / round(ts_data.shape[0] / 24)
+        )
+
+    # Merge sample and weights to create weighted sample
+    weighted_sample = pd.merge(left=sample, right=weights,
+                               left_index=True, right_index=True)
+
+    return weighted_sample
+
+
+def create_importance_subsample(ts_data, generation_costs,
+                                num_days_sample, num_days_high, blocks):
+    """Create importance subsample."""
+
+    if not all(ts_data.index == generation_costs.index):
+        raise ValueError('Time series data and generation costs '
+                         'should have same index.')
+
+    # Add generation costs to time series data
+    ts_data_gc = pd.merge(left=ts_data, right=generation_costs,
+                          left_index=True, right_index=True)
+
+    num_days_input = round(ts_data.shape[0] / 24)
+    num_days_low = num_days_sample - num_days_high
+    num_ts_input, num_ts_sample = 24*num_days_input, 24*num_days_sample
+    num_ts_high, num_ts_low = 24*num_days_high, 24*num_days_low
+
+    # Sample the num_days_high or num_ts_high time steps with highest
+    # generation cost and a random selection of those remaining
+    if blocks == 'hours':
+        ts_data_sorted = ts_data_gc.sort_values(by='generation_cost',
+                                                ascending=False)
+        sample_high = ts_data_sorted.iloc[:num_ts_high]
+        sample_low = ts_data_sorted.iloc[
+            num_ts_high + np.random.choice(num_ts_input - num_ts_high,
+                                           num_ts_low, replace=False)
+        ]
+        sample = pd.concat((sample_high, sample_low), axis=0)
+        sample.loc[:, 'cluster_weight'] = 1    # No clustering
+    elif blocks == 'days':
+        days_sorted = ts_data_gc.resample('24h').max().dropna().sort_values(
+            by='generation_cost', ascending=False
+        ).index
+        days_sorted = pd.DataFrame(zip(days_sorted.year,
+                                       days_sorted.month,
+                                       days_sorted.day),
+                                   columns=['year', 'month', 'day'])
+
+        ####
+        # Cluster remaining days
+        sample_high = get_day_sample(ts_data,
+                                     days_sorted.iloc[:num_days_high])
+        sample_high.loc[:, 'cluster_weight'] = 1    # No clustering
+        ts_data_low = ts_data.loc[~ts_data.index.isin(sample_high.index)]
+        sample_low = create_clustered_sample(ts_data_low,
+                                             num_clusters=num_days_low)
+        sample_low = sample_low.rename(columns={'weight':'cluster_weight'})
+        sample = pd.concat([sample_high, sample_low], sort=False)
+
+        # Activate if randomly sampling days
+        # sample_days_high = days_sorted.iloc[:num_days_high]
+        # sample_days_low = days_sorted.iloc[
+        #     num_days_high + np.random.choice(num_days_input - num_days_high,
+        #                                      num_days_low, replace=False)
+        # ]
+        # sample_days = pd.concat((sample_days_high,
+        #                          sample_days_low), axis=0)
+        # sample = get_day_sample(ts_data, sample_days)
+        # sample.loc[:, 'cluster_weight'] = 1    # No clustering
+        ####
+
+    # Calculate weights (summing to num_ts_total). These are a product
+    # of the cluster weights and the importance weights
+    weights = np.zeros(shape=num_ts_sample)
+    cluster_weights = sample.loc[:, 'cluster_weight'].copy()
+    weights[:num_ts_high] = (cluster_weights[:num_ts_high]
+                             * num_ts_sample / num_ts_input)
+    weights[num_ts_high:] = (cluster_weights[num_ts_high:]
+                             * num_ts_sample
+                             * (num_ts_input - num_ts_high)
+                             / (num_ts_low * num_ts_input))
+    sample.loc[:, 'weight'] = weights
+
+    # Remove generation cost column and reset index
+    sample = sample.drop(['cluster_weight'], axis=1)
+
+    logging.info('Sampled days: \n%s',
+                 sample.resample('24h').mean().dropna().index)
+
+    return sample
+
+
+def run_model(model_name, ts_data, run_mode, fixed_caps=None,
+              baseload_integer=False, baseload_ramping=False, run_id=0):
+    """Run model with some time series data."""
+
+    if model_name == '1_region':
+        Model = models.OneRegionModel
+    elif model_name == '6_region':
+        Model = models.SixRegionModel
+    else:
+        raise ValueError('Invalid model_name')
+
+    # Create and run model in Calliope
+    logging.info('Creating instance of Calliope model.')
+    model = Model(ts_data=ts_data,
+                  run_mode=run_mode,
+                  fixed_caps=fixed_caps,
+                  baseload_integer=baseload_integer,
+                  baseload_ramping=baseload_ramping,
+                  run_id=run_id)
+    logging.info('Model instance created.\n')
+    logging.info('Running model.')
+    model.run()
+    logging.info('Model run complete.\n\n')
+
+    return model
+
+
+def run_model_with_random_subsample(model_name, ts_data, run_mode,
+                                    baseload_integer, baseload_ramping,
+                                    num_days_sample, subsample_blocks,
+                                    run_id=0):
+    """XXXX XXXX XXXX XXXX"""
+
+    # Create random subsample and reset index
+    subsample = create_random_subsample(ts_data=ts_data,
+                                        num_days_sample=num_days_sample,
+                                        blocks=subsample_blocks)
+    subsample.index = pd.to_datetime(np.arange(subsample.shape[0]),
+                                     unit='h', origin='2020')
+
+    logging.info('Running model with random subsample.')
+    solved_model = run_model(model_name=model_name,
+                             ts_data=subsample,
+                             run_mode=run_mode,
+                             baseload_integer=baseload_integer,
+                             baseload_ramping=baseload_ramping,
+                             run_id=run_id)
+
+    return solved_model
+
+
+def run_model_with_clustered_subsample(model_name, ts_data, run_mode,
+                                       baseload_integer, baseload_ramping,
+                                       num_days_sample, run_id=0):
+    """XXXX XXXX XXXX XXXX"""
+
+    # Create random subsample and reset index
+    subsample = create_clustered_sample(ts_data=ts_data,
+                                        num_clusters=num_days_sample)
+    subsample.index = pd.to_datetime(np.arange(subsample.shape[0]),
+                                     unit='h', origin='2020')
+
+    logging.info('Running model with k-medoids clustered subsample.')
+    solved_model = run_model(model_name=model_name,
+                             ts_data=subsample,
+                             run_mode=run_mode,
+                             baseload_integer=baseload_integer,
+                             baseload_ramping=baseload_ramping,
+                             run_id=run_id)
+
+    return solved_model
+
+
+def run_model_with_importance_subsample(model_name, ts_data, run_mode,
+                                        baseload_integer, baseload_ramping,
+                                        num_days_sample, num_days_high,
+                                        subsample_blocks, run_id=0):
+    """XXXX XXXX XXXX XXXX"""
+
+
+
+    ####
+    # Stage 1 model run with clustered subsample
+    logging.info('Starting stage 1: run model with clustered subsample.')
+    subsample_s1 = create_clustered_sample(ts_data=ts_data,
+                                           num_clusters=num_days_sample)
+    subsample_s1.index = pd.to_datetime(np.arange(subsample_s1.shape[0]),
+                                        unit='h', origin='2020')
+    solved_model_s1 = run_model(model_name=model_name,
+                                ts_data=subsample_s1,
+                                run_mode=run_mode,
+                                baseload_integer=baseload_integer,
+                                baseload_ramping=baseload_ramping,
+                                run_id=run_id)
+
+    # Create importance subsample using stage 1 capacities
+    if model_name == '1_region':
+        summary_outputs = solved_model_s1.get_summary_outputs()
+    elif model_name == '6_region':
+        summary_outputs = solved_model_s1.get_summary_outputs()
+
+    caps_s1 = summary_outputs.loc[:, 'output']
+    logging.info('Stage 1 estimated capacities:\n %s', caps_s1)
+
+    generation_costs = calculate_generation_costs(
+        model_name=model_name,
+        ts_data=ts_data,
+        fixed_caps=caps_s1,
+        baseload_ramping=baseload_ramping,
+        run_id=run_id
+    )
+    logging.info('Generation costs:\n %s', generation_costs)
+
+    importance_subsample_s2 = create_importance_subsample(
+        ts_data=ts_data,
+        generation_costs=generation_costs,
+        num_days_sample=num_days_sample,
+        num_days_high=num_days_high,
+        blocks=subsample_blocks
+    )
+    importance_subsample_s2.index = pd.to_datetime(
+        np.arange(importance_subsample_s2.shape[0]), unit='h', origin='2020'
+    )    # Reset index
+
+    # Stage 2 model run with importance subsample
+    logging.info('Starting stage 2: run model with importance subsample.')
+    solved_model_s2 = run_model(model_name=model_name,
+                                ts_data=importance_subsample_s2,
+                                run_mode=run_mode,
+                                baseload_integer=baseload_integer,
+                                baseload_ramping=baseload_ramping,
+                                run_id=run_id)
+
+    return solved_model_s2
+
+
+def run_model_forward_with_fixed_caps(model_name, ts_data, run_mode,
+                                      fixed_caps, baseload_integer,
+                                      baseload_ramping, run_id=0):
+
+    # Run mode argument is used only for forward consistency -- not used.
+    if run_mode == 'plan':
+        raise ValueError('Model with fixed caps should not be plan mode.')
+
+    solved_model = run_model(model_name=model_name,
+                             ts_data=ts_data,
+                             run_mode='operate',
+                             fixed_caps=fixed_caps,
+                             baseload_integer=baseload_integer,
+                             baseload_ramping=baseload_ramping,
+                             run_id=run_id)
+    return solved_model

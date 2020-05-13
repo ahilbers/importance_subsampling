@@ -1,0 +1,48 @@
+import:
+    - 'techs.yaml' 
+    - 'locations.yaml'
+
+model:
+    name: 1-region model
+    calliope_version: 0.6.5
+    timeseries_data_path: ''
+
+run:
+    objective_options.cost_class.monetary: 1
+    solver: cbc
+    zero_threshold: 1e-10  # Round any value smaller to 0
+
+overrides:
+    plan:
+    # planning mode -- determine capacities
+        run.mode: plan
+    continuous:
+    # continuous baseload capacity
+        techs.baseload.constraints.energy_cap_max: inf
+    integer:
+    # baseload capacity in units of 3GW
+        techs.baseload.constraints.units_max: inf
+        techs.baseload.constraints.energy_cap_per_unit: 3
+    allow_unmet:
+    # plan mode only, unmet demand always allowed in operate mode
+        techs.unmet.costs.monetary.energy_cap: 0
+    operate:
+    # operate mode -- fixed capacities
+        run:
+            mode: operate
+            cyclic_storage: False
+            operation:
+                # maximise scheduling horizon
+                horizon: 332880  # hours
+                window: 332880  # hours
+        locations:
+            region1:
+                techs.baseload.constraints.energy_cap_equals: 10
+                techs.peaking.constraints.energy_cap_equals: 20
+                techs.wind.constraints.resource_area_equals: 30
+                techs.unmet.constraints.energy_cap_equals: 1e10
+    ramping:
+        techs.baseload.constraints.energy_ramping: 0.2  # frac/hr
+    gurobi:
+    # run with gurobi (faster commercial solver)
+        run.solver: gurobi
