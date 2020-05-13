@@ -42,7 +42,7 @@ overrides:
             operation:
             # maximise scheduling horizon
                 horizon: 2496  # hours
-                window: 2160  # hours
+                window: 2496  # hours
         locations:
             region1:
                 techs.baseload_region1.constraints.energy_cap_equals: 10
