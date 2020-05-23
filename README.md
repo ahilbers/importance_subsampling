@@ -24,7 +24,9 @@ The easiest way to get started is by running
 python3 main.py
 ```
 
-from a command line. This runs a simple application of *importance subsampling* on the *LP* model. A directory `results` is created with the relevant model outputs. Arguments can be specified direclty in `main.py`, which contains extensive documentation. In the default settings, calling `main.py` gives a lot of logging statements. If you want to get more concise print statements, run instead `python3 main.py  --logging_level ERROR`
+from a command line. This runs a simple application of *importance subsampling* on the *LP* model. A directory `results` is created with the relevant model outputs. Arguments can be specified direclty in `main.py`, which contains extensive documentation. This function creates a single file `summary_outputs.csv` with a high-level overview of relevant model outputs, and a directory called `full_outputs` that contains the full set of model outputs.
+
+In the default settings, calling `main.py` gives a lot of logging statements. If you want to get more concise print statements, run instead `python3 main.py  --logging_level ERROR`
 
 
 

@@ -5,6 +5,7 @@ import logging
 import numpy as np
 import pandas as pd
 import models
+import tests
 
 
 def calculate_generation_costs(ts_data, fixed_caps, baseload_ramping=False):
@@ -297,6 +298,7 @@ def run_model(ts_data, baseload_integer=False, baseload_ramping=False):
     logging.info('Model instance created.\n')
     logging.info('Running model.')
     model.run()
+    tests.test_output_consistency_6_region(model, run_mode='plan')
     logging.info('Model run complete.\n\n')
 
     return model
@@ -320,8 +322,7 @@ def run_model_with_random_subsample(ts_data,
         is 24*num_days_subsample
     subsample_blocks (str) : the subsample blocks. If 'days', subsampling
         is used to create a set of contiguous days. If 'hours', subsamples
-        are hours. 'Hours' are not allowed if ts_subsampling='clustering',
-        and has no effect if ts_subsampling=None.
+        are hours.
 
     Returns:
     --------
@@ -400,8 +401,8 @@ def run_model_with_importance_subsample(ts_data,
         subsample if ts_subsampling='importance'. Not used otherwise.
     subsample_blocks (str) : the subsample blocks. If 'days', subsampling
         is used to create a set of contiguous days. If 'hours', subsamples
-        are hours. 'Hours' are not allowed if ts_subsampling='clustering',
-        and has no effect if ts_subsampling=None.
+        are hours and any clustering is replaced with random selection of
+        time steps.
 
     Returns:
     --------

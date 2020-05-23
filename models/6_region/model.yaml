@@ -35,14 +35,14 @@ overrides:
         techs.unmet_region4.costs.monetary.energy_cap: 0
         techs.unmet_region5.costs.monetary.energy_cap: 0
     operate:
-    # operate mode -- fixed capacities
+    # operate mode -- fixed capacities. These default values can be
+    # overwritten via fixed_caps argument in models.py
         run:
             mode: operate
             cyclic_storage: False
             operation:
-            # maximise scheduling horizon
                 horizon: 2496  # hours
-                window: 2496  # hours
+                window: 2160  # hours
         locations:
             region1:
                 techs.baseload_region1.constraints.energy_cap_equals: 10

@@ -1,10 +1,11 @@
 """Run the models in HPC."""
 
 
+import os
 import argparse
 import logging
 import models
-import model_runs
+import iss
 
 
 def parse_args():
@@ -56,9 +57,9 @@ def conduct_model_run(model_name_in_paper, ts_data, ts_subsampling,
                            'baseload_integer': model_name_in_paper == 'MILP',
                            'baseload_ramping': model_name_in_paper == 'MILP'}
     if ts_subsampling is None:
-        solved_model = model_runs.run_model(**run_characteristics)
+        solved_model = iss.run_model(**run_characteristics)
     elif ts_subsampling == 'random':
-        solved_model = model_runs.run_model_with_random_subsample(
+        solved_model = iss.run_model_with_random_subsample(
             **run_characteristics,
             num_days_sample=num_days_subsample,
             subsample_blocks=subsample_blocks
@@ -66,12 +67,12 @@ def conduct_model_run(model_name_in_paper, ts_data, ts_subsampling,
     elif ts_subsampling == 'clustering':
         if subsample_blocks == 'hours':
             raise ValueError('Cluster subsample blocks must be days.')
-        solved_model = model_runs.run_model_with_clustered_subsample(
+        solved_model = iss.run_model_with_clustered_subsample(
             **run_characteristics,
             num_days_sample=num_days_subsample
         )
     elif ts_subsampling == 'importance':
-        solved_model = model_runs.run_model_with_importance_subsample(
+        solved_model = iss.run_model_with_importance_subsample(
             **run_characteristics,
             num_days_sample=num_days_subsample,
             num_days_high=num_days_high,
@@ -106,6 +107,15 @@ def run_example():
         datefmt='%Y-%m-%d,%H:%M:%S'
     )
 
+    if os.path.exists('summary_outputs.csv'):
+        raise ValueError(
+            'Example script creates file `summary_outputs.csv`, but this '
+            'already exists. Delete or rename this file before continuing')
+    if os.path.exists('full_outputs'):
+        raise ValueError(
+            'Example script creates directory `full_outputs`, but this '
+            'already exists. Delete or rename it before continuing')
+
     # Load the full time series that we will sample from
     ts_data = models.load_time_series_data(model_name='6_region')
     ts_data = ts_data.loc['2017']
@@ -114,8 +124,8 @@ def run_example():
                       ts_data=ts_data,
                       ts_subsampling='importance',
                       subsample_blocks='days',
-                      num_days_subsample=90,
-                      num_days_high=30)
+                      num_days_subsample=48,
+                      num_days_high=16)
 
 
 if __name__ == '__main__':
