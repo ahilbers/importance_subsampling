@@ -11,6 +11,8 @@ This repository contains data, model files and example code for the paper *Impor
 
 **Note**: This paper is a generalisation of an older paper: *Importance subsampling: improving power system planning under climate-based uncertainty*, available [here](https://doi.org/10.1016/j.apenergy.2019.04.110) (publicly availble version [here](https://arxiv.org/abs/1903.10916)). If you've come to this repository from that paper, check out the new paper, as it generalises the method significantly. If you want to see the code for the older paper, check out the branch `2019_applied_energy_paper` of this repository.
 
+The three test-case models used in the paper (the *LP planning*, *MILP planning* and *operation* models) are specific instances of a more general class of test power system models, available open-source in [this repository](https://github.com/ahilbers/renewable_test_PSMs), where they are documented and available in a more general form. If you want to use these models for your own research, its easier to use that respository instead of this one.
+
 
 
 
@@ -56,7 +58,7 @@ Since `main.py`, containing all code, is a short file with only a few functions,
 
 Running `main.py` requires:
 - Python modules:
-  - `Calliope 0.6.5`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation.
+  - `Calliope 0.6.5`: A (fully open-source) energy system model generator. See [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation.
   - basic: `numpy`, `pandas`.
 - Other:
   - `cbc`: open-source optimiser: see [this link](https://projects.coin-or.org/Cbc) for installation. Other solvers (e.g. `gurobi`) are also possible -- the solver can be specified in `model_files/model.yaml`.
