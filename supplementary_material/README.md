@@ -4,3 +4,5 @@ This directory contains a larger number of plots corresponding to Figure 2 in th
 
 The names of the files mean the following.
 - `caps`, `caps_full`, `peak_unmet`, `gen_unmet` mean the systemwide total optimal installed capacities, the same plots at regional (bus) level (e.g. `PK_R3` means peaking capacity in region 3), the systemwide capacity shortage, and the systemwide energy unserved respectively.
+- `days` or `hours` indicate whether days or individual hours are sampled. If `days`, the grey plots show *k*-medoids clustering and the black plots show *importance subsampling*. If `hours`, the grey plots show random sampling of hours and the black plots show *importance subsampling*, with clustering replaced by a random subsampling of hours in steps 1 and 5 of the method (see the paper).
+- The numbers refer to the sample length in days. If `days`, this is the number of days sampled. If `hours`, this is the number of hours sampled divided by 24. For *importance subsampling*, the number of "extreme" days (n_d_e in the paper) is always 1/3 of the total sample size, so that 24 days means 8 extreme days.
