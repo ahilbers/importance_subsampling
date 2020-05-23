@@ -38,6 +38,9 @@ from a command line. This runs a simple application of *importance subsampling* 
 ### Code
 
 - `main.py`: simple implementation of _importance subsampling_ on the power system model introduced in the paper. This model is created and solved in the open-source energy system modelling framework `Calliope` (see acknowledgements). See _requirements & installation_ for setup details. `main.py` can be run directly from a command line. A directory `results` is created with the relevant model outputs.
+- `iss.py`: the code for the *importance_subsampling* methodology.
+- `models.py`: some utility code for the models.
+- `tests.py`: some tests to check if the models are behaving as expected.
 
 
 ### Supplementary material
