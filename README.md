@@ -9,7 +9,7 @@
 
 This repository contains data, model files and example code for the paper *Importance subsampling for power system planning under multi-year demand and weather variability* (2020).
 
-**Note**: This paper is a generalisation of an older paper: 
+**Note**: This paper is a generalisation of an older paper: *Importance subsampling: improving power system planning under climate-based uncertainty*, available [here](https://doi.org/10.1016/j.apenergy.2019.04.110) (publicly availble version [here](https://arxiv.org/abs/1903.10916). If you've come to this repository from that paper, check out the new paper, as it generalises the method significantly. If you want to see the code for the older paper, check out the branch `2019_applied_energy_paper` of this repository.
 
 
 
