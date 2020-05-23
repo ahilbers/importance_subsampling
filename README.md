@@ -22,7 +22,7 @@ The easiest way to get started is by running
 python3 main.py
 ```
 
-from a command line. This runs a simple application of importance subsampling on the *LP* model. Arguments can be specified direclty in `main.py`, which contains extensive documentation.
+from a command line. This runs a simple application of *importance subsampling* on the *LP* model. A directory `results` is created with the relevant model outputs. Arguments can be specified direclty in `main.py`, which contains extensive documentation. In the default settings, calling `main.py` gives a lot of logging statements. If you want to get more concise print statements, run instead `python3 main.py  --logging_level ERROR`
 
 
 
