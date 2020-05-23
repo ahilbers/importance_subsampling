@@ -45,14 +45,14 @@ from a command line. This runs a simple application of *importance subsampling* 
 
 ### Supplementary material
 
-- `supplementary_material.pdf`: PDF file with results of applying _importance subsampling_ to the `demand_wind_national_grid.csv` time series data instead of `demand_wind.csv` as in the original paper
+- Additional model output plots, see README inside the directory `supplementary material`.
 
 
 
 
 ## Requirements & Installation
 
-Since `main.py`, containing all code, is a short file with only a few functions, it's probably easier to directly copy-paste any relevant code into a personal project as opposed to installing a new module. For this reason, this repository does not contain a `setup.py` file.
+Since `main.py`, containing all code, is a short file with only a few functions, and is tailored to the specific power system model syntax, it's probably easier to fork/copy-paste and edit any relevant code into a personal project as opposed to installing a new module. For this reason, this repository does not contain a `setup.py` file.
 
 Running `main.py` requires:
 - Python modules:
@@ -66,29 +66,29 @@ Running `main.py` requires:
 
 ## How to cite
 
-If you use this repository for further research, please cite the following paper:
+If you use this repository for further research, please cite the following papers:
 
 - AP Hilbers, DJ Brayshaw, A Gandy (2019). Importance subsampling: improving power system planning under climate-based uncertainty. Applied Energy, 251 (113114), doi:[10.1016/j.apenergy.2019.04.110](https://doi.org/10.1016/j.apenergy.2019.04.110).
+
+- AP Hilbers, DJ Brayshaw, A Gandy (2020). Importance subsampling for power system planning under multi-year demand and weather uncertainty. *In press*.
 
 
 
 ## Contact
 
-Adriaan Hilbers. Department of Mathematics, Imperial College London. [aph416@ic.ac.uk](mailto:aph416@ic.ac.uk).
+[Adriaan Hilbers](https://ahilbers.github.io/). Department of Mathematics, Imperial College London. [a.hilbers17@imperial.ac.uk](mailto:a.hilbers17@imperial.ac.uk).
 
 
 
 
 ## Acknowledgements
 
-Models are constructed in the modelling framework `Calliope`, created by Stefan Pfenninger and Bryn Pickering. See [callio.pe](hptts://callio.pe) or the following paper for details:
+Models are constructed in the modelling framework `Calliope`, created by Stefan Pfenninger and Bryn Pickering. See [callio.pe](https://callio.pe) or the following paper for details:
 
-- S Pfenninger and B Pickering (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:[10.21105/joss.00825](https://doi.org/10.21105/joss.00825).
+- Pfenninger, S. and Pickering, B. (2018). Calliope: a multi-scale energy systems modelling framework. Journal of Open Source Software, 3(29), 825, doi:[10.21105/joss.00825](https://doi.org/10.21105/joss.00825).
 
-The demand and wind dataset is based on work by Hannah Bloomfield et al. Details can be found in the following papers:
+The demand and wind dataset is based on work by Hannah Bloomfield et al. Details can be found in the following paper and dataset:
 
-- HC Bloomfield, DJ Brayshaw, LC Shaffrey, PJ Coker and HE Thornton (2016). Quantifying the increasing sensitivity of power systems to climate variability. Environmental Research Letters, 11 (12). 124025. ISSN 1748­ 9326 doi:[10.1088/1748­9326/11/12/124025](https://doi.org/10.1088/1748­9326/11/12/124025)
+- Bloomfield, H. C., Brayshaw, D. J. and Charlton-Perez, A. (2019) Characterising the winter meteorological drivers of the European electricity system using Targeted Circulation Types. Meteorological Applications. ISSN 1469-8080 (In Press). doi:[10.1002/met.1858](https://doi.org/10.1002/met.1858)
 
-- DJ Cannon, DJ Brayshaw, J Methven, PJ Coker, D Lenaghan (2015). Using reanalysis data to quantify extreme wind power generation statistics: A 33 year case study in Great Britain. Renewable Energy, 75 , 767 – 778. doi:[10.1016/j.renene.2014.10.024](https://doi.org/10.1016/j.renene.2014.10.024)
-
-- DR Drew, DJ Cannon, DJ Brayshaw, JF Barlow, PJ Coker (2015). The impact of future offshore wind farms on wind power generation in Great Britain. Resources, 4 , 155–171. doi:[10.3390/resources4010155](https://doi.org/10.3390/resources4010155).
+- HC Bloomfield, DJ Brayshaw, A Charlton-Perez (2020). MERRA2 derived time series of European country-aggregate electricity demand, wind power generation and solar power generation. University of Reading. Dataset. doi:[10.17864/1947.239](https://doi.org/10.17864/1947.239)
