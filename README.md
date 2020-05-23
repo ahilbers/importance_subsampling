@@ -7,7 +7,9 @@
 
 ## Summary
 
-Data, model files and example code related to the paper *Importance subsampling for power system planning under multi-year demand and weather uncertainty*. This repository also contains supplementary material for the paper.
+This repository contains data, model files and example code for the paper *Importance subsampling for power system planning under multi-year demand and weather variability* (2020).
+
+**Note**: This paper is a generalisation of an older paper: 
 
 
 
