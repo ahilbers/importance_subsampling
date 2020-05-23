@@ -1,15 +1,10 @@
 """Run the models in HPC."""
 
 
-import os
 import argparse
 import logging
-import time
-import numpy as np
-import pandas as pd
 import models
 import model_runs
-import tests
 
 
 def parse_args():
@@ -113,14 +108,14 @@ def run_example():
 
     # Load the full time series that we will sample from
     ts_data = models.load_time_series_data(model_name='6_region')
-    ts_data = ts_data.loc['2017-01']
+    ts_data = ts_data.loc['2017']
 
     conduct_model_run(model_name_in_paper='LP',
                       ts_data=ts_data,
-                      ts_subsampling=None,
+                      ts_subsampling='importance',
                       subsample_blocks='days',
-                      num_days_subsample=9,
-                      num_days_high=3)
+                      num_days_subsample=90,
+                      num_days_high=30)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,26 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 # importance_subsampling
-Data, model files, example code and supplementary material related to the paper [Importance subsampling: improving power system planning under climate-based uncertainty](https://www.sciencedirect.com/science/article/pii/S0306261919307639) (2019). A publicly available preprint can be found [here](https://arxiv.org/pdf/1903.10916.pdf). 
+
+
+
+
+## Summary
+
+Data, model files and example code related to the paper *Importance subsampling for power system planning under multi-year demand and weather uncertainty*. This repository also contains supplementary material for the paper.
+
+
+
+
+## Usage
+
+The easiest way to get started is by running
+
+```
+python3 main.py
+```
+
+from a command line. This runs a simple application of importance subsampling on the *LP* model. Arguments can be specified direclty in `main.py`, which contains extensive documentation.
 
 
 
@@ -10,9 +29,8 @@ Data, model files, example code and supplementary material related to the paper 
 
 ### Modelling & data files
 
-- `model_files/`: power system model generating files, for `Calliope` (see acknowledgements)
-- `data/`: demand and weather time series data
-  - `demand_wind.csv`: demand and wind time series used in paper
+- `models/`: power system model generating files, for `Calliope` (see acknowledgements)
+- `data/`: demand and weather time series data.
 
 
 ### Code
@@ -33,9 +51,8 @@ Since `main.py`, containing all code, is a short file with only a few functions,
 
 Running `main.py` requires:
 - Python modules:
-  - `Calliope 0.6.4`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation.
-  - `numpy 1.62.2`
-  - `pandas 0.24.2`
+  - `Calliope 0.6.5`:  see [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation.
+  - basic: `numpy`, `pandas`.
 - Other:
   - `cbc`: open-source optimiser: see [this link](https://projects.coin-or.org/Cbc) for installation. Other solvers (e.g. `gurobi`) are also possible -- the solver can be specified in `model_files/model.yaml`.
 
