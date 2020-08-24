@@ -74,7 +74,7 @@ If you use this repository for further research, please cite the following paper
 
 - AP Hilbers, DJ Brayshaw, A Gandy (2019). Importance subsampling: improving power system planning under climate-based uncertainty. Applied Energy, 251 (113114), doi:[10.1016/j.apenergy.2019.04.110](https://doi.org/10.1016/j.apenergy.2019.04.110).
 
-- AP Hilbers, DJ Brayshaw, A Gandy (2020). Importance subsampling for power system planning under multi-year demand and weather uncertainty. *In press*.
+- AP Hilbers, DJ Brayshaw, A Gandy (2020). Importance subsampling for power system planning under multi-year demand and weather uncertainty. In proceedings of the 16th International Conference on Probabilistic Methods Applied to Power Systems.
 
 
 
