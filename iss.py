@@ -1,4 +1,4 @@
-"""Example model runs."""
+"""The subsampling schemes."""
 
 
 import logging

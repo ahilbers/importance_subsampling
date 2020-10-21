@@ -1,4 +1,4 @@
-"""Run the models in HPC."""
+"""Run the models."""
 
 
 import os
