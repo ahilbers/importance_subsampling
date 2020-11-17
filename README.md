@@ -60,7 +60,7 @@ Since `main.py`, containing all code, is a short file with only a few functions,
 
 Running `main.py` requires:
 - Python modules:
-  - `Calliope 0.6.6`: A (fully open-source) energy system model generator. See [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation. Everything also works with `0.6.5`.
+  - `Calliope 0.6.6`: A (fully open-source) energy system model generator. See [this link](https://calliope.readthedocs.io/en/stable/user/installation.html) for installation. Everything also works with `0.6.5`. Other versions have not bee checked, but may still work.
   - basic: `numpy`, `pandas`.
 - Other:
   - `cbc`: open-source optimiser: see [this link](https://projects.coin-or.org/Cbc) for installation. Other solvers (e.g. `gurobi`) are also possible -- the solver can be specified in `model_files/model.yaml`.
